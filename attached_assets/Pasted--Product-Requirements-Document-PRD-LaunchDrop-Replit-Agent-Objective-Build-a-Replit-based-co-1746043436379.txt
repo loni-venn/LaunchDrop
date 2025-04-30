@@ -1,0 +1,93 @@
+📄 Product Requirements Document (PRD): LaunchDrop Replit Agent
+🧭 Objective
+Build a Replit-based codebase that generates deployable, static one-page Stripe-enabled landing pages from minimal YAML config files. The project must be git-syncable to GitHub and portable to an Ubuntu server running Nginx, requiring no manual file rewrites or post-processing.
+
+🧱 Project Structure
+bash
+Copy
+Edit
+launchdrop/
+├── launchdrop.py                # Core script: load YAML, render template, output HTML
+├── template.html.j2             # Jinja2 landing page template
+├── products/                    # YAML files describing individual products
+│   └── example.yaml
+├── assets/                      # Images referenced in YAML configs
+│   └── hero.jpg
+├── rendered/                    # Output: rendered sites, 1 folder per product
+│   └── example/
+│       ├── index.html
+│       └── hero.jpg
+├── deploy.sh                    # Script to sync rendered folder to Linode via scp/rsync
+├── requirements.txt             # Python dependencies
+├── .replit                      # Replit runtime config
+└── README.md                    # Setup instructions
+🎯 Functional Requirements
+1. Input Format (YAML)
+Each product must be defined by a simple YAML file with fields:
+
+yaml
+Copy
+Edit
+product_slug: "3daybucket"
+product_title: "3-Day Bucket"
+heading: "Reclaim Your Focus in 3 Days"
+subheading: "A no-fluff reset for solo professionals"
+price: "$29"
+stripe_link: "https://buy.stripe.com/testlink"
+pitch_paragraph_1: "This isn't a course. It's a reset button..."
+pitch_paragraph_2: "By Day 3, you'll know exactly what to do..."
+features:
+  - Daily checklist and clarity prompts
+  - Guided Notion dashboard
+  - Lifetime updates
+product_image: "hero.jpg"
+author_name: "Loni Venn"
+year: "2025"
+contact_email: "loni@example.com"
+2. Template Rendering
+launchdrop.py reads product YAML, loads template.html.j2, and renders final HTML
+
+Output is saved to rendered/{{ product_slug }}/index.html
+
+Image (if specified) is copied from /assets/ into /rendered/{{ product_slug }}/
+
+3. Deployment Script
+deploy.sh takes a product_slug argument and uses scp or rsync to copy the rendered folder to:
+
+css
+Copy
+Edit
+/var/www/html/{{ product_slug }}/
+on your Ubuntu Linode server.
+
+You must define REMOTE_HOST, REMOTE_USER, and optionally KEY_PATH in the script.
+
+🧰 Tech Constraints
+Web server: Nginx (pre-installed, config serves from /var/www/html)
+
+Server OS: Ubuntu (root access assumed)
+
+Hosting: Linode (small instance)
+
+Runtime: Python 3.10+
+
+Dependencies: jinja2, pyyaml
+
+📦 Deliverables
+Fully structured launchdrop/ project
+
+A working product example (3daybucket.yaml) with image and output
+
+Deploy script that transfers rendered folder to Linode
+
+✅ Acceptance Criteria
+All output is self-contained HTML and image files — no dynamic server code
+
+No need for Flask, databases, or JavaScript dependencies
+
+Output folder is 100% static and compatible with Nginx
+
+No need to manually rewrite paths or variables after generation
+
+Running python launchdrop.py products/3daybucket.yaml creates a working site in rendered/3daybucket/
+
