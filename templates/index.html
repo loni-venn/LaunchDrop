@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaunchDrop - Static Landing Page Generator</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-rocket me-2"></i>LaunchDrop
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/products">Products</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card bg-dark">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <i class="fas fa-rocket text-primary me-2"></i>LaunchDrop
+                        </h1>
+                        <p class="card-text lead">
+                            Static landing page generator for Stripe-enabled product pages.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="mb-0">Available Products</h2>
+                    </div>
+                    <div class="card-body">
+                        {% if products %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in products %}
+                                    <tr>
+                                        <td>{{ product.title }}</td>
+                                        <td>
+                                            {% if product.is_rendered %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check-circle me-1"></i>Generated
+                                            </span>
+                                            {% else %}
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="fas fa-exclamation-circle me-1"></i>Not Generated
+                                            </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="/generate/{{ product.slug }}" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-cog me-1"></i>Generate
+                                                </a>
+                                                {% if product.is_rendered %}
+                                                <a href="/view/{{ product.slug }}" class="btn btn-info btn-sm" target="_blank">
+                                                    <i class="fas fa-eye me-1"></i>View
+                                                </a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>No product configurations found.
+                            Create YAML files in the <code>launchdrop/products/</code> directory.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h3 class="mb-0">How It Works</h3>
+                    </div>
+                    <div class="card-body">
+                        <ol class="list-group list-group-numbered">
+                            <li class="list-group-item">Create a YAML configuration file in <code>launchdrop/products/</code></li>
+                            <li class="list-group-item">Click the Generate button to create a static landing page</li>
+                            <li class="list-group-item">View the rendered page in your browser</li>
+                            <li class="list-group-item">Deploy to your server with the deploy script</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h3 class="mb-0">Quick Links</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <a href="/products" class="list-group-item list-group-item-action">
+                                <i class="fas fa-box me-2"></i>View All Products
+                            </a>
+                            <a href="https://docs.stripe.com/checkout/quickstart" target="_blank" class="list-group-item list-group-item-action">
+                                <i class="fas fa-credit-card me-2"></i>Stripe Documentation
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-light py-4 mt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 LaunchDrop</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">Generated with LaunchDrop</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

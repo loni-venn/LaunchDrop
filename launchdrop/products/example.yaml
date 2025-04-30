@@ -1,0 +1,18 @@
+# Example product configuration
+product_slug: "example"
+product_title: "Example Product"
+heading: "This is an Example Product"
+subheading: "A demonstration of the LaunchDrop system"
+price: "$19"
+stripe_link: "https://buy.stripe.com/example"
+pitch_paragraph_1: "This is an example product to demonstrate how LaunchDrop works. You can customize all of these fields."
+pitch_paragraph_2: "The rendered page will be a complete landing page with all your information pre-filled."
+features:
+  - "Feature one description goes here"
+  - "Another amazing feature of this product"
+  - "One more compelling reason to buy"
+  - "Final feature that makes this irresistible"
+product_image: "hero.jpg"
+author_name: "Your Name"
+year: "2023"
+contact_email: "you@example.com"
