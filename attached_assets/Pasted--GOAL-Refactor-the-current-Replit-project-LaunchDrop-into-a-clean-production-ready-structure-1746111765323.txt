@@ -1,0 +1,112 @@
+## ☑️ GOAL
+Refactor the current Replit project `LaunchDrop` into a clean, production-ready structure that can be Git-pulled and deployed directly on a Linode Ubuntu server using Nginx and Gunicorn. Payment is handled using **static Stripe Payment Links** embedded in YAML. The output must include a deployment script and a systemd service.
+
+---
+
+## 📁 TASKS
+
+### 1. 🗂️ Restructure Project
+- Create a new `app/` directory.
+- Move the following into `app/`:
+  - `main.py` → `app/main.py`
+  - `templates/` folder → `app/templates/`
+  - `launchdrop.py` → `app/launchdrop.py`
+- Update imports in `main.py` if needed to properly import from `launchdrop.py`.
+
+---
+
+### 2. 🧠 Modify Template and YAML Parsing for Stripe URLs
+
+- Ensure each product YAML file includes a field like:
+
+```yaml
+product_name: 3-Day Bucket
+description: A spiritual productivity reset
+price: "$47"
+stripe_link: "https://buy.stripe.com/test_abc123"
+In launchdrop.py, ensure the YAML parser reads and passes stripe_link into the Jinja2 context.
+
+In template.html.j2, include a button like:
+
+html
+Copy
+Edit
+<a href="{{ product.stripe_link }}" class="btn btn-primary" target="_blank">Buy Now</a>
+This avoids needing any Stripe API calls.
+
+3. 🚀 Create a deploy.sh script at root level
+bash
+Copy
+Edit
+#!/bin/bash
+PRODUCT=$1
+
+# Regenerate static site
+python3 app/launchdrop.py $PRODUCT
+
+# Deploy to Nginx directory
+sudo rm -rf /var/www/html/$PRODUCT
+sudo cp -r rendered/$PRODUCT /var/www/html/$PRODUCT
+sudo chown -R www-data:www-data /var/www/html/$PRODUCT
+
+echo "Deployed $PRODUCT to /var/www/html/$PRODUCT"
+4. 📦 Update requirements.txt
+Add only what’s needed for local rendering and Flask:
+
+nginx
+Copy
+Edit
+Flask
+Jinja2
+PyYAML
+gunicorn
+(No python-dotenv, no stripe.)
+
+5. ⚙️ Add launchdrop.service file at root:
+ini
+Copy
+Edit
+[Unit]
+Description=LaunchDrop Flask App (Gunicorn)
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/opt/launchdrop
+ExecStart=/usr/bin/gunicorn -w 2 -b 127.0.0.1:8000 app.main:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+6. 🧹 Add .gitignore file at root:
+markdown
+Copy
+Edit
+__pycache__/
+*.pyc
+rendered/
+✅ FINAL STRUCTURE (after agent completes task)
+css
+Copy
+Edit
+launchdrop/
+├── app/
+│   ├── main.py
+│   ├── launchdrop.py
+│   └── templates/
+├── assets/
+├── products/
+├── rendered/
+├── deploy.sh
+├── requirements.txt
+├── .gitignore
+└── launchdrop.service
+📌 NOTE TO AGENT
+Ensure everything still runs correctly inside Replit after the refactor.
+
+Validate the deploy.sh script works as intended with local files.
+
+Test that gunicorn -w 2 -b 127.0.0.1:8000 app.main:app runs without error.
+
+Add comments to main.py, launchdrop.py, and template.html.j2 for clarity.
+
